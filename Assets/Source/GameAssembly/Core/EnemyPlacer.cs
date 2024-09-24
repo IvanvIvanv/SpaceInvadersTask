@@ -4,18 +4,13 @@ using UnityEngine;
 
 namespace SpaceInvadersTask.GameAssembly
 {
-    public class EnemyPlacer : MonoBehaviour
+    public static class EnemyPlacer
     {
-        // Start is called before the first frame update
-        void Start()
+        public static void PlaceEnemiesInGrid(
+            Vector2 topLeftCorner,
+            Vector2Int cellAmount, Vector2 cellSize) //, EnemyData[,] enemyDatas
         {
-        
-        }
 
-        // Update is called once per frame
-        void Update()
-        {
-        
         }
     }
 }

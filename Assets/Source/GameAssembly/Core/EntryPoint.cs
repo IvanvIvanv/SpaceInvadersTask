@@ -6,6 +6,9 @@ namespace SpaceInvadersTask.GameAssembly
 {
     public class EntryPoint : MonoBehaviour
     {
-
+        private void Awake()
+        {
+            
+        }
     }
 }
