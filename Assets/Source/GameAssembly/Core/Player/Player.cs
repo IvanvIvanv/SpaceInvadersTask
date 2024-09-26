@@ -5,13 +5,23 @@ using UnityEngine.InputSystem;
 
 namespace SpaceInvadersTask.GameAssembly
 {
+    [RequireComponent(typeof(SpriteRenderer))]
     public class Player : MonoBehaviour
     {
         [Header("Movement")]
         [SerializeField]
         private float speedMetersPerSeconds = 1f;
 
-        float moveDir;
+        private SpriteRenderer spriteRenderer;
+
+        private float moveDir;
+
+        private Bounds borderBounds;
+
+        private void Awake()
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
 
         private void Update()
         {
