@@ -15,9 +15,7 @@ namespace SpaceInvadersTask.GameAssembly
 
         private void Update()
         {
-            transform.position += new Vector3(moveDir, 0f, 0f) *
-                speedMetersPerSeconds *
-                Time.deltaTime;
+            transform.position += speedMetersPerSeconds * Time.deltaTime * new Vector3(moveDir, 0f, 0f);
         }
 
         public void OnMove(InputValue value)
