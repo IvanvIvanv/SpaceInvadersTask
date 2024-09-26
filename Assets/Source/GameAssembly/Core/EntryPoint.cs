@@ -18,11 +18,23 @@ namespace SpaceInvadersTask.GameAssembly
 
         private void Awake()
         {
+            GenerateEnemies();
+            FitCamera();
+        }
+
+        private void GenerateEnemies()
+        {
             EnemyData[,] enemyGrid = EnemyPlacer.GenerateEnemyGrid(enemyTypes, gridSize);
             GameObject enemyCollectionGO = new("EnemyCollection");
             Transform enemyCollectionTransform = enemyCollectionGO.transform;
             enemyCollectionTransform.SetParent(transform, true);
             EnemyPlacer.PlaceEnemiesInGrid(enemyGrid, enemyCollectionTransform, enemyGap);
+        }
+
+        private void FitCamera()
+        {
+            Bounds combinedBounds = transform.GetCombinedBoundsOfChildren();
+            Camera.main.FitInBounds(combinedBounds);
         }
     }
 }
