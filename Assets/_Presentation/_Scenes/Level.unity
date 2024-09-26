@@ -259,6 +259,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddd5add1839fd1f4eb800adbce47a222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyTypes:
+  - {fileID: 11400000, guid: 4a9de8bf0fb74114d911530f741af2a9, type: 2}
+  - {fileID: 11400000, guid: 15913e0c10976b549927c1057f8937a8, type: 2}
+  gridSize: {x: 10, y: 5}
+  enemyGap: {x: 0.25, y: 0.25}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
