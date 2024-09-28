@@ -1,4 +1,3 @@
-using GluonGui.WorkspaceWindow.Views.WorkspaceExplorer.Explorer;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +7,17 @@ namespace SpaceInvadersTask.GameAssembly
 {
     public static class EnemyPlacer
     {
-        public static EnemyData[,] GenerateEnemyGrid(EnemyData[] enemyTypes, Vector2Int gridSize)
+        public static void GridDataToEnemyGrid(EnemyGridData gridData, Transform parent)
+        {
+            EnemyData[,] enemyGrid = TypesToDataGrid(gridData.EnemyTypes, gridData.Size);
+
+            GameObject collectionGO = new("EnemyGrid");
+            Transform collectionTransform = collectionGO.transform;
+            collectionTransform.SetParent(parent, true);
+            DataGridToEnemyGrid(enemyGrid, collectionTransform, gridData.EnemyGap);
+        }
+
+        private static EnemyData[,] TypesToDataGrid(EnemyData[] enemyTypes, Vector2Int gridSize)
         {
             EnemyData[,] enemyGrid = new EnemyData[gridSize.x, gridSize.y];
 
@@ -25,7 +34,7 @@ namespace SpaceInvadersTask.GameAssembly
             return enemyGrid;
         }
 
-        public static void PlaceEnemiesInGrid(
+        private static void DataGridToEnemyGrid(
             EnemyData[,] enemyDatas, Transform parent, Vector2 enemyGap)
         {
             float gridHorisontalExtent = (enemyDatas.GetLength(0) * enemyGap.x - enemyGap.x) / 2;
