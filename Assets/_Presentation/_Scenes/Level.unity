@@ -314,6 +314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speedMetersPerSeconds: 1
+  projectileData: {fileID: 11400000, guid: 055e054b3c867734ba7e088b6174f9cb, type: 2}
 --- !u!114 &1800563642
 MonoBehaviour:
   m_ObjectHideFlags: 0

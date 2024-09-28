@@ -64,8 +64,8 @@ namespace SpaceInvadersTask.GameAssembly
             GameObject enemyGO = new("Enemy");
             enemyGO.transform.SetParent(parent, true);
 
-            var enemyRenderer = enemyGO.AddComponent<SpriteRenderer>();
-            enemyRenderer.sprite = enemyData.Sprite;
+            var enemy = enemyGO.AddComponent<Enemy>();
+            enemy.SetData(enemyData);
 
             return enemyGO;
         }

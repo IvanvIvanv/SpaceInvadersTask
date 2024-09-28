@@ -6,11 +6,15 @@ using UnityEngine.InputSystem;
 namespace SpaceInvadersTask.GameAssembly
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class Player : MonoBehaviour
+    public class Player : MonoBehaviour, IHittable
     {
         [Header("Movement")]
         [SerializeField]
         private float speedMetersPerSeconds = 1f;
+
+        [Header("Shooting")]
+        [SerializeField]
+        private ProjectileData projectileData;
 
         private SpriteRenderer spriteRenderer;
 
@@ -18,9 +22,12 @@ namespace SpaceInvadersTask.GameAssembly
 
         private Bounds borderBounds;
 
+        public Renderer Renderer => spriteRenderer;
+
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
+            TargetRegistry.enemyTargets.Add(this);
         }
 
         private void Update()
@@ -31,6 +38,16 @@ namespace SpaceInvadersTask.GameAssembly
         public void OnMove(InputValue value)
         {
             moveDir = value.Get<float>();
+        }
+
+        public void OnShoot()
+        {
+            ProjectileCreator.Create(TargetRegistry.playerTargets, projectileData, transform);
+        }
+
+        public void Hit()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

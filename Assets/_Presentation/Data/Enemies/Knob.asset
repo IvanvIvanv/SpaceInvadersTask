@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Knob
   m_EditorClassIdentifier: 
   <Sprite>k__BackingField: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  <ProjectileData>k__BackingField: {fileID: 11400000, guid: db4c36b38887da64c89815ab1d64d296, type: 2}

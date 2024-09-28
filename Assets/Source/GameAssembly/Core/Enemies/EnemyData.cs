@@ -9,5 +9,8 @@ namespace SpaceInvadersTask.GameAssembly
     {
         [field: SerializeField]
         public Sprite Sprite { get; private set; }
+
+        [field: SerializeField]
+        public ProjectileData ProjectileData { get; private set; }
     }
 }
