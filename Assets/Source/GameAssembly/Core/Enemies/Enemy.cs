@@ -5,32 +5,15 @@ using UnityEngine;
 
 namespace SpaceInvadersTask.GameAssembly
 {
-    [RequireComponent(typeof(SpriteRendererCollider))]
     [RequireComponent(typeof(SpriteRenderer))]
     public class Enemy : MonoBehaviour
     {
         [SerializeField]
-        private Sprite sprite;
-
-        [SerializeField]
         private GameObject projectilePrefab;
 
-        private new SpriteRenderer renderer;
-        private new SpriteRendererCollider collider;
-
-        public Renderer Renderer => renderer;
-
-        void Awake()
+        private void OnTriggerEnter2D(Collider2D other)
         {
-            renderer = GetComponent<SpriteRenderer>();
-            collider = GetComponent<SpriteRendererCollider>();
-
-            renderer.sprite = sprite;
-            collider.OnCollisionEnter += Hit;
-        }
-
-        public void Hit()
-        {
+            if (other.gameObject.layer != LayerMask.NameToLayer("PlayerProjectile")) return;
             Destroy(gameObject);
         }
     }

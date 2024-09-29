@@ -1,27 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SpaceInvadersTask.GameAssembly
 {
-    public class EnemyGridGenerator : MonoBehaviour
+    public static class EnemyGridGenerator
     {
-        [SerializeField]
-        private GameObject[] enemyPrefabs;
-
-        [SerializeField]
-        private Vector2Int size;
-
-        [SerializeField]
-        private Vector2 enemyGap;
-
-        private void Awake()
+        public static GameObject[] GenerateGrid(GameObject[] enemyPrefabs, Vector2Int size, Vector2 enemyGap)
         {
-            GameObject[,] enemyGrid = CreateEnemyGrid(enemyPrefabs, size);
+            GameObject[,] enemyGrid = GenerateEnemyArray2D(enemyPrefabs, size);
             GridPlacer.PositionInGrid(enemyGrid, enemyGap);
+            return enemyGrid.Cast<GameObject>().Select(c => c).ToArray();
         }
 
-        private GameObject[,] CreateEnemyGrid(GameObject[] enemyPrefabs, Vector2Int gridSize)
+        private static GameObject[,] GenerateEnemyArray2D(GameObject[] enemyPrefabs, Vector2Int gridSize)
         {
             GameObject[,] enemyGrid = new GameObject[gridSize.x, gridSize.y];
 
@@ -31,7 +24,7 @@ namespace SpaceInvadersTask.GameAssembly
 
                 for (int column = 0; column < gridSize.x; column++)
                 {
-                    GameObject enemy = Instantiate(rowType, transform);
+                    GameObject enemy = Object.Instantiate(rowType);
                     enemyGrid[column, row] = enemy;
                 }
             }

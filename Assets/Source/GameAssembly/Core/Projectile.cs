@@ -1,40 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace SpaceInvadersTask.GameAssembly
 {
-    [RequireComponent(typeof(SpriteRendererCollider))]
     public class Projectile : MonoBehaviour
     {
         [SerializeField]
+        private LayerMask targets;
+
+        [SerializeField]
         private Vector2 direction;
-
-        private new SpriteRendererCollider collider;
-
-        private void Awake()
-        {
-            collider = GetComponent<SpriteRendererCollider>();
-        }
-
-        private void OnEnable()
-        {
-            collider.OnCollisionEnter += Hit;
-        }
-
-        private void OnDisable()
-        {
-            collider.OnCollisionEnter -= Hit;
-        }
 
         private void Update()
         {
             transform.position += (Vector3)direction * Time.deltaTime;
         }
 
-        private void Hit()
+        private void OnTriggerEnter2D(Collider2D other)
         {
-            Destroy(gameObject);
+            if (targets == (targets | (1 << other.gameObject.layer)))
+                Destroy(gameObject);
         }
     }
 }

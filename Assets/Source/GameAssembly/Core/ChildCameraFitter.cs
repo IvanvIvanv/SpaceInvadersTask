@@ -6,13 +6,10 @@ namespace SpaceInvadersTask.GameAssembly
 {
     public class ChildCameraFitter : MonoBehaviour
     {
-        [SerializeField]
-        private new Camera camera;
-
-        private void Start()
+        public void FitCamera()
         {
             Bounds childBounds = transform.GetCombinedBoundsOfChildren();
-            camera.FitInBounds(childBounds);
+            Camera.main.FitInBounds(childBounds);
         }
     }
 }

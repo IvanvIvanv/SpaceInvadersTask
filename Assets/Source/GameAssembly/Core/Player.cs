@@ -5,36 +5,29 @@ using UnityEngine.InputSystem;
 
 namespace SpaceInvadersTask.GameAssembly
 {
-    [RequireComponent(typeof(SpriteRendererCollider))]
     [RequireComponent(typeof(SpriteRenderer))]
     public class Player : MonoBehaviour
     {
         [Header("Movement")]
         [SerializeField]
-        private float speedMetersPerSeconds = 1f;
+        private float speed = 1f;
 
         [Header("Shooting")]
         [SerializeField]
         private GameObject projectilePrefab;
 
-        private SpriteRenderer spriteRenderer;
-        private new SpriteRendererCollider collider;
-
         private float moveDir;
-
-        public Renderer Renderer => spriteRenderer;
-
-        private void Awake()
-        {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-
-            collider = GetComponent<SpriteRendererCollider>();
-            collider.OnCollisionEnter += Hit;
-        }
 
         private void Update()
         {
-            transform.position += speedMetersPerSeconds * Time.deltaTime * new Vector3(moveDir, 0f, 0f);
+            Vector3 newPos = transform.position;
+            newPos.x += speed * Time.deltaTime * moveDir;
+            
+            Vector3 leftEdge = Camera.main.ViewportToWorldPoint(Vector3.zero);
+            Vector3 rightEdge = Camera.main.ViewportToWorldPoint(Vector3.right);
+
+            newPos.x = Mathf.Clamp(newPos.x, leftEdge.x, rightEdge.x);
+            transform.position = newPos;
         }
 
         public void OnMove(InputValue value)
@@ -46,11 +39,6 @@ namespace SpaceInvadersTask.GameAssembly
         {
             GameObject projectile = Instantiate(projectilePrefab);
             projectile.transform.position = transform.position;
-        }
-
-        public void Hit()
-        {
-            Destroy(gameObject);
         }
     }
 }
