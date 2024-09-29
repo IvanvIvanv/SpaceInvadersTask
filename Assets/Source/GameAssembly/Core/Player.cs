@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,8 @@ namespace SpaceInvadersTask.GameAssembly
         private GameObject projectilePrefab;
 
         private float moveDir;
+
+        public event Action OnResetted;
 
         private void Update()
         {
@@ -39,6 +42,18 @@ namespace SpaceInvadersTask.GameAssembly
         {
             GameObject projectile = Instantiate(projectilePrefab);
             projectile.transform.position = transform.position;
+        }
+
+        public void OnReset()
+        {
+            OnResetted?.Invoke();
+        }
+
+        public void Setup()
+        {
+            Vector3 newPos = transform.position;
+            newPos.x = 0;
+            transform.position = newPos;
         }
     }
 }

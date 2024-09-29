@@ -31,6 +31,11 @@ namespace SpaceInvadersTask.GameAssembly
 
         public void GenerateGrid()
         {
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                Destroy(transform.GetChild(i).gameObject);
+            }
+
             GameObject[] enemies = EnemyGridGenerator.GenerateGrid(enemyPrefabs, size, enemyGap);
 
             foreach (var enemy in enemies)
@@ -41,15 +46,15 @@ namespace SpaceInvadersTask.GameAssembly
 
         private void Update()
         {
-            Vector3 newPos = transform.position;
-            newPos.x += horisontalSpeed * Time.deltaTime * (moveRightFlag ? 1f : -1f);
-            transform.position = newPos;
-
             if (Mathf.Abs(transform.localPosition.x) >= moveDownDistance)
             {
                 moveRightFlag = !moveRightFlag;
                 MoveDown();
             }
+
+            Vector3 newPos = transform.position;
+            newPos.x += horisontalSpeed * Time.deltaTime * (moveRightFlag ? 1f : -1f);
+            transform.position = newPos;
         }
 
         private void MoveDown()
