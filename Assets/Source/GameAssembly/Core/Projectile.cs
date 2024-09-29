@@ -4,43 +4,37 @@ using UnityEngine;
 
 namespace SpaceInvadersTask.GameAssembly
 {
+    [RequireComponent(typeof(SpriteRendererCollider))]
     public class Projectile : MonoBehaviour
     {
-        private new SpriteRenderer renderer;
+        [SerializeField]
+        private Vector2 direction;
 
-        private List<IHittable> hittables = new();
-        private ProjectileData data;
+        private new SpriteRendererCollider collider;
 
         private void Awake()
         {
-            renderer = gameObject.AddComponent<SpriteRenderer>();
+            collider = GetComponent<SpriteRendererCollider>();
+        }
+
+        private void OnEnable()
+        {
+            collider.OnCollisionEnter += Hit;
+        }
+
+        private void OnDisable()
+        {
+            collider.OnCollisionEnter -= Hit;
         }
 
         private void Update()
         {
-            transform.position += (Vector3)data.Direction * Time.deltaTime;
-
-            for (int i = 0; i < hittables.Count; i++)
-            {
-                if (hittables[i].Renderer == null) continue;
-                if (!hittables[i].Renderer.bounds.Intersects(renderer.bounds)) continue;
-                hittables[i].Hit();
-                hittables.Remove(hittables[i]);
-                Destroy(gameObject);
-                return;
-            }
+            transform.position += (Vector3)direction * Time.deltaTime;
         }
 
-        public void SetTargets(List<IHittable> hittables)
+        private void Hit()
         {
-            this.hittables = hittables;
-        }
-
-        public void SetProjectileData(ProjectileData data)
-        {
-            this.data = data;
-            renderer.sprite = data.Sprite;
-            renderer.color = data.Color;
+            Destroy(gameObject);
         }
     }
 }

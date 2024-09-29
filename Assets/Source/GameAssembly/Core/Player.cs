@@ -5,8 +5,9 @@ using UnityEngine.InputSystem;
 
 namespace SpaceInvadersTask.GameAssembly
 {
+    [RequireComponent(typeof(SpriteRendererCollider))]
     [RequireComponent(typeof(SpriteRenderer))]
-    public class Player : MonoBehaviour, IHittable
+    public class Player : MonoBehaviour
     {
         [Header("Movement")]
         [SerializeField]
@@ -14,20 +15,21 @@ namespace SpaceInvadersTask.GameAssembly
 
         [Header("Shooting")]
         [SerializeField]
-        private ProjectileData projectileData;
+        private GameObject projectilePrefab;
 
         private SpriteRenderer spriteRenderer;
+        private new SpriteRendererCollider collider;
 
         private float moveDir;
-
-        private Bounds borderBounds;
 
         public Renderer Renderer => spriteRenderer;
 
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
-            TargetRegistry.enemyTargets.Add(this);
+
+            collider = GetComponent<SpriteRendererCollider>();
+            collider.OnCollisionEnter += Hit;
         }
 
         private void Update()
@@ -42,12 +44,13 @@ namespace SpaceInvadersTask.GameAssembly
 
         public void OnShoot()
         {
-            ProjectileCreator.Create(TargetRegistry.playerTargets, projectileData, transform);
+            GameObject projectile = Instantiate(projectilePrefab);
+            projectile.transform.position = transform.position;
         }
 
         public void Hit()
         {
-            throw new System.NotImplementedException();
+            Destroy(gameObject);
         }
     }
 }
