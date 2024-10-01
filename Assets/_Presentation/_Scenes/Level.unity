@@ -216,6 +216,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resultsGui: {fileID: 2080831687}
   scoreDisplay: {fileID: 1906826057}
+  cameraMargin: {x: 1, y: 1}
 --- !u!114 &24978837
 MonoBehaviour:
   m_ObjectHideFlags: 0

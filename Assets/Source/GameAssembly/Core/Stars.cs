@@ -17,6 +17,10 @@ namespace SpaceInvadersTask.GameAssembly
 
         public void FitInBounds()
         {
+            Vector3 newPos = Camera.main.ViewportToWorldPoint(new(0.5f, 1f));
+            newPos.z = 0f;
+            transform.position = newPos;
+
             Vector2 viewportCenter = Camera.main.ViewportToWorldPoint(Vector2.one / 2f);
             Vector2 viewportTopRight = Camera.main.ViewportToWorldPoint(Vector2.one);
 

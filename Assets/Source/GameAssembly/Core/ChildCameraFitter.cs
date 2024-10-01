@@ -8,9 +8,10 @@ namespace SpaceInvadersTask.GameAssembly
     {
         public Bounds CurrentBounds { get; private set; }
 
-        public void FitCamera()
+        public void FitCamera(Vector2 margin)
         {
             Bounds childBounds = transform.GetCombinedBoundsOfChildren();
+            childBounds.Expand(margin);
             Camera.main.FitInBounds(childBounds);
 
             CurrentBounds = childBounds;

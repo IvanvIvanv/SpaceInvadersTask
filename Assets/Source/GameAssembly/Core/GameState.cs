@@ -13,11 +13,16 @@ namespace SpaceInvadersTask.GameAssembly
     {
         public static GameState Instance { get; private set; }
 
+        [Header("Gui")]
         [SerializeField]
         private GameObject resultsGui;
 
         [SerializeField]
         private TextMeshProUGUI scoreDisplay;
+
+        [Header("Camera")]
+        [SerializeField]
+        private Vector2 cameraMargin = new(10f, 10f);
 
         //Component references
         private Player player;
@@ -55,7 +60,7 @@ namespace SpaceInvadersTask.GameAssembly
         private void Start()
         {
             NewGame();
-            CameraFitter.FitCamera();
+            CameraFitter.FitCamera(cameraMargin);
             playerBounds.SetBounds(player.GetComponent<Renderer>());
             stars.FitInBounds();
 
