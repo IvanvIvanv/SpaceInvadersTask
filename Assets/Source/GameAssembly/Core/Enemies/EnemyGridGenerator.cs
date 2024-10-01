@@ -21,11 +21,6 @@ namespace SpaceInvadersTask.GameAssembly
             Enemy[,] enemyGrid = GenerateEnemyArray2D(enemyPrefabs, size);
             GridPlacer.PositionInGrid(enemyGrid, enemyGap);
 
-            foreach (var enemy in enemyGrid.OfType<Enemy>())
-            {
-                enemy.transform.SetParent(gridTransform);
-            }
-
             return enemyGrid;
         }
 
@@ -49,6 +44,7 @@ namespace SpaceInvadersTask.GameAssembly
                 {
                     GameObject enemy = Object.Instantiate(rowType);
                     enemyGrid[column, row] = enemy.GetComponent<Enemy>();
+                    enemy.transform.SetParent(gridTransform, true);
                 }
             }
 

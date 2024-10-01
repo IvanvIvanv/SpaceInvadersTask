@@ -6070,6 +6070,8 @@ MonoBehaviour:
   changeDirDistance: 3
   moveDownOffset: 1.5
   horisontalSpeed: 2
+  minShootDelay: 2
+  maxShootDelay: 4
 --- !u!4 &2029401595
 Transform:
   m_ObjectHideFlags: 0

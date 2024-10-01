@@ -8,7 +8,7 @@ namespace SpaceInvadersTask.GameAssembly
 {
     public class EnemyGrid : MonoBehaviour
     {
-        [Header("EnemyGeneration")]
+        [Header("Enemy Generation")]
         [SerializeField]
         private GameObject[] enemyPrefabs;
 
@@ -18,7 +18,7 @@ namespace SpaceInvadersTask.GameAssembly
         [SerializeField]
         private Vector2 enemyGap;
 
-        [Header("GridMovement")]
+        [Header("Grid Movement")]
         [SerializeField]
         private float changeDirDistance = 3f;
 
@@ -28,9 +28,20 @@ namespace SpaceInvadersTask.GameAssembly
         [SerializeField]
         private float horisontalSpeed = 10f;
 
+        [Header("Grid Shooting")]
+        [SerializeField]
+        private float minShootDelay = 3f;
+
+        [SerializeField]
+        private float maxShootDelay = 8f;
+
         //Composition
         private EnemyGridMovement movement;
-        private EnemyGridGenerator enemyGridGenerator;
+        private EnemyGridGenerator generator;
+        private EnemyGridShooting shooting;
+
+        //Coroutines
+        private Coroutine enemyShootingCoroutine;
 
         //Properties
         public Enemy[,] CurrentEnemyGrid { get; private set; }
@@ -38,7 +49,7 @@ namespace SpaceInvadersTask.GameAssembly
         private void Awake()
         {
             movement = new EnemyGridMovement(transform, changeDirDistance, moveDownOffset, horisontalSpeed);
-            enemyGridGenerator = new EnemyGridGenerator(transform);
+            generator = new EnemyGridGenerator(transform);
         }
 
         private void Update()
@@ -48,7 +59,17 @@ namespace SpaceInvadersTask.GameAssembly
 
         public void GenerateGrid()
         {
-            CurrentEnemyGrid = enemyGridGenerator.GenerateGrid(enemyPrefabs, size, enemyGap);
+            StopEnemyShooting();
+            movement.ResetMovement();
+            CurrentEnemyGrid = generator.GenerateGrid(enemyPrefabs, size, enemyGap);
+            shooting = new EnemyGridShooting(CurrentEnemyGrid, minShootDelay, maxShootDelay);
+            enemyShootingCoroutine = StartCoroutine(shooting.ShootingRoutine());
+        }
+
+        private void StopEnemyShooting()
+        {
+            if (enemyShootingCoroutine == null) return;
+            StopCoroutine(enemyShootingCoroutine);
         }
     }
 }

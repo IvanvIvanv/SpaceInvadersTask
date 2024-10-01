@@ -12,7 +12,7 @@ namespace SpaceInvadersTask.GameAssembly
         private readonly float moveDownOffset = 10f;
         private readonly float horisontalSpeed = 10f;
 
-        private float currentHorisontalDirection;
+        private float currentHorisontalDirection = 1f;
 
         public EnemyGridMovement(
             Transform gridTransform, 
@@ -22,8 +22,6 @@ namespace SpaceInvadersTask.GameAssembly
             this.changeDirDistance = changeDirDistance;
             this.moveDownOffset = moveDownOffset;
             this.horisontalSpeed = horisontalSpeed;
-
-            currentHorisontalDirection = 1f;
         }
 
         public void FrameMove()
@@ -33,6 +31,12 @@ namespace SpaceInvadersTask.GameAssembly
             Vector3 newPos = gridTransform.position;
             newPos.x += horisontalSpeed * Time.deltaTime * currentHorisontalDirection;
             gridTransform.position = newPos;
+        }
+
+        public void ResetMovement()
+        {
+            gridTransform.localPosition = Vector3.zero;
+            currentHorisontalDirection = 1f;
         }
 
         private void CheckChangeDirection()
