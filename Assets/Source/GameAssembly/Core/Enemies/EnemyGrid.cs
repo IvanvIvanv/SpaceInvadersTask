@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,21 +27,28 @@ namespace SpaceInvadersTask.GameAssembly
         [SerializeField]
         private float horisontalSpeed = 10f;
 
-        private float currentHorisontalDirection = 1f;
+        private float currentHorisontalDirection;
 
-        public void GenerateGrid()
+        public event Action<int> OnEnemyKilled;
+
+        public Enemy[] GenerateGrid()
         {
             for (int i = 0; i < transform.childCount; i++)
             {
                 Destroy(transform.GetChild(i).gameObject);
             }
 
-            GameObject[] enemies = EnemyGridGenerator.GenerateGrid(enemyPrefabs, size, enemyGap);
+            Enemy[] enemies = EnemyGridGenerator.GenerateGrid(enemyPrefabs, size, enemyGap);
 
             foreach (var enemy in enemies)
             {
                 enemy.transform.SetParent(transform);
+                enemy.OnEnemyKilled += scoreValue => OnEnemyKilled?.Invoke(scoreValue);
             }
+
+            currentHorisontalDirection = 1f;
+
+            return enemies;
         }
 
         private void Update()

@@ -13,13 +13,15 @@ namespace SpaceInvadersTask.GameAssembly
         public static GameState Instance { get; private set; }
 
         [SerializeField]
-        private GameObject resultsGui; 
+        private GameObject resultsGui;
+
+        [SerializeField]
+        private TextMeshProUGUI scoreDisplay;
 
         //Component references
         private Player player;
         private PlayerInput playerInput;
 
-        private ChildCameraFitter cameraFitter;
         private PlayerBounds playerBounds;
         private EnemyGrid enemyGrid;
 
@@ -31,6 +33,7 @@ namespace SpaceInvadersTask.GameAssembly
 
         //Public component references
         public ProjectileCreatorDestroyer ProjectileCreatorDestroyer { get; private set; }
+        public ChildCameraFitter CameraFitter { get; private set; }
 
         private void Awake()
         {
@@ -50,9 +53,10 @@ namespace SpaceInvadersTask.GameAssembly
         private void Start()
         {
             NewGame();
-            cameraFitter.FitCamera();
+            CameraFitter.FitCamera();
             playerBounds.SetBounds(player.GetComponent<Renderer>());
             playerBounds.OnEnemyEnterBounds += OnEnemyEnterBoundsHandler;
+            enemyGrid.OnEnemyKilled += OnEnemyKilledHandler;
         }
 
         private void OnDestroy()
@@ -70,6 +74,12 @@ namespace SpaceInvadersTask.GameAssembly
             playerInput.enabled = false;
         }
 
+        private void OnEnemyKilledHandler(int scoreValue)
+        {
+            score += scoreValue;
+            scoreDisplay.text = score.ToString();
+        }
+
         public void OnReset()
         {
             NewGame();
@@ -83,12 +93,13 @@ namespace SpaceInvadersTask.GameAssembly
             enemyGrid.GenerateGrid();
             player.Setup();
             ProjectileCreatorDestroyer.DestroyAllProjectiles();
+            score = 0;
         }
 
         private void GetMonoReferences()
         {
             ProjectileCreatorDestroyer = FindObjectOfType<ProjectileCreatorDestroyer>();
-            cameraFitter = FindObjectOfType<ChildCameraFitter>();
+            CameraFitter = FindObjectOfType<ChildCameraFitter>();
             playerBounds = FindObjectOfType<PlayerBounds>();
             enemyGrid = FindObjectOfType<EnemyGrid>();
             player = FindObjectOfType<Player>();

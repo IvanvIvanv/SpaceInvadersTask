@@ -7,11 +7,11 @@ namespace SpaceInvadersTask.GameAssembly
 {
     public static class EnemyGridGenerator
     {
-        public static GameObject[] GenerateGrid(GameObject[] enemyPrefabs, Vector2Int size, Vector2 enemyGap)
+        public static Enemy[] GenerateGrid(GameObject[] enemyPrefabs, Vector2Int size, Vector2 enemyGap)
         {
             GameObject[,] enemyGrid = GenerateEnemyArray2D(enemyPrefabs, size);
             GridPlacer.PositionInGrid(enemyGrid, enemyGap);
-            return enemyGrid.Cast<GameObject>().Select(c => c).ToArray();
+            return enemyGrid.Cast<GameObject>().Select(c => c.GetComponent<Enemy>()).ToArray();
         }
 
         private static GameObject[,] GenerateEnemyArray2D(GameObject[] enemyPrefabs, Vector2Int gridSize)

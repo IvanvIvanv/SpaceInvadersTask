@@ -100,6 +100,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 5822337565218554600, guid: 045af199655387249b54791513667c1a, type: 3}
+  scoreValue: 2
+  health: 3
 --- !u!61 &7163095536481016791
 BoxCollider2D:
   m_ObjectHideFlags: 0
