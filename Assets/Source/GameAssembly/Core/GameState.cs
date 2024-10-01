@@ -29,6 +29,7 @@ namespace SpaceInvadersTask.GameAssembly
         //Player values
         private int score;
 
+        //Public component references
         public ProjectileCreatorDestroyer ProjectileCreatorDestroyer { get; private set; }
 
         private void Awake()

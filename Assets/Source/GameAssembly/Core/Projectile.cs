@@ -16,6 +16,8 @@ namespace SpaceInvadersTask.GameAssembly
         private void Update()
         {
             transform.position += (Vector3)direction * Time.deltaTime;
+
+            //TODO: Destroy when out of bounds
         }
 
         private void OnTriggerEnter2D(Collider2D other)
