@@ -31,15 +31,16 @@ namespace SpaceInvadersTask.GameAssembly
             remainingHealth = maxHealth;
         }
 
-        private void Start()
-        {
-            Shoot();
-        }
-
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.layer != LayerMask.NameToLayer("PlayerProjectile")) return;
             ReceiveDamage();
+        }
+
+        public void Shoot()
+        {
+            GameState.Instance.ProjectileCreatorDestroyer.CreateProjectile(
+                projectilePrefab, transform);
         }
 
         private void ReceiveDamage()
@@ -50,17 +51,6 @@ namespace SpaceInvadersTask.GameAssembly
             if (remainingHealth > 0) return;
             Destroy(gameObject);
             OnEnemyKilled?.Invoke(scoreValue);
-        }
-
-        private void Shoot()
-        {
-            if (transform == null) return;
-
-            GameObject projectileGO = GameState.Instance.ProjectileCreatorDestroyer.CreateProjectile(
-                projectilePrefab, transform);
-
-            var projectile = projectileGO.GetComponent<Projectile>();
-            projectile.OnDestroyed += Shoot;
-        }
+        } 
     }
 }

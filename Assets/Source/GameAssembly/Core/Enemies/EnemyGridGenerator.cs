@@ -5,18 +5,41 @@ using UnityEngine;
 
 namespace SpaceInvadersTask.GameAssembly
 {
-    public static class EnemyGridGenerator
+    public class EnemyGridGenerator
     {
-        public static Enemy[] GenerateGrid(GameObject[] enemyPrefabs, Vector2Int size, Vector2 enemyGap)
+        private readonly Transform gridTransform;
+
+        public EnemyGridGenerator(Transform gridTransform)
         {
-            GameObject[,] enemyGrid = GenerateEnemyArray2D(enemyPrefabs, size);
-            GridPlacer.PositionInGrid(enemyGrid, enemyGap);
-            return enemyGrid.Cast<GameObject>().Select(c => c.GetComponent<Enemy>()).ToArray();
+            this.gridTransform = gridTransform;
         }
 
-        private static GameObject[,] GenerateEnemyArray2D(GameObject[] enemyPrefabs, Vector2Int gridSize)
+        public Enemy[,] GenerateGrid(GameObject[] enemyPrefabs, Vector2Int size, Vector2 enemyGap)
         {
-            GameObject[,] enemyGrid = new GameObject[gridSize.x, gridSize.y];
+            ClearEnemies(gridTransform);
+
+            Enemy[,] enemyGrid = GenerateEnemyArray2D(enemyPrefabs, size);
+            GridPlacer.PositionInGrid(enemyGrid, enemyGap);
+
+            foreach (var enemy in enemyGrid.OfType<Enemy>())
+            {
+                enemy.transform.SetParent(gridTransform);
+            }
+
+            return enemyGrid;
+        }
+
+        private void ClearEnemies(Transform gridTransform)
+        {
+            for (int i = 0; i < gridTransform.childCount; i++)
+            {
+                Object.Destroy(gridTransform.GetChild(i).gameObject);
+            }
+        }
+
+        private Enemy[,] GenerateEnemyArray2D(GameObject[] enemyPrefabs, Vector2Int gridSize)
+        {
+            Enemy[,] enemyGrid = new Enemy[gridSize.x, gridSize.y];
 
             for (int row = 0; row < gridSize.y; row++)
             {
@@ -25,7 +48,7 @@ namespace SpaceInvadersTask.GameAssembly
                 for (int column = 0; column < gridSize.x; column++)
                 {
                     GameObject enemy = Object.Instantiate(rowType);
-                    enemyGrid[column, row] = enemy;
+                    enemyGrid[column, row] = enemy.GetComponent<Enemy>();
                 }
             }
 

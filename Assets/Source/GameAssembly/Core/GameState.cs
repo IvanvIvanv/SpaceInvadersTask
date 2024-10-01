@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using System.Linq;
 
 namespace SpaceInvadersTask.GameAssembly
 {
@@ -59,7 +60,6 @@ namespace SpaceInvadersTask.GameAssembly
             stars.FitInBounds();
 
             playerBounds.OnEnemyEnterBounds += OnEnemyEnterBoundsHandler;
-            enemyGrid.OnEnemyKilled += OnEnemyKilledHandler;
         }
 
         private void OnDestroy()
@@ -96,12 +96,16 @@ namespace SpaceInvadersTask.GameAssembly
         private void NewGame()
         {
             GamePauser.SetPause(false);
-            resultsGuiDisplayer.HideResultsScreen();
-            playerInput.enabled = true;
-            enemyGrid.GenerateGrid();
-            player.Setup();
-            ProjectileCreatorDestroyer.DestroyAllProjectiles();
             SetScore(0);
+            resultsGuiDisplayer.HideResultsScreen();
+
+            player.Setup();
+            playerInput.enabled = true;
+
+            ProjectileCreatorDestroyer.DestroyAllProjectiles();
+
+            enemyGrid.GenerateGrid();
+            enemyGrid.CurrentEnemyGrid.OfType<Enemy>().ToList().ForEach(enemy => enemy.OnEnemyKilled += OnEnemyKilledHandler);
         }
 
         private void GetMonoReferences()

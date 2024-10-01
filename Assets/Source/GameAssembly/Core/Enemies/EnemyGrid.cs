@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SpaceInvadersTask.GameAssembly
@@ -27,52 +28,27 @@ namespace SpaceInvadersTask.GameAssembly
         [SerializeField]
         private float horisontalSpeed = 10f;
 
-        private float currentHorisontalDirection;
+        //Composition
+        private EnemyGridMovement movement;
+        private EnemyGridGenerator enemyGridGenerator;
 
-        public event Action<int> OnEnemyKilled;
+        //Properties
+        public Enemy[,] CurrentEnemyGrid { get; private set; }
 
-        public Enemy[] GenerateGrid()
+        private void Awake()
         {
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                Destroy(transform.GetChild(i).gameObject);
-            }
-
-            Enemy[] enemies = EnemyGridGenerator.GenerateGrid(enemyPrefabs, size, enemyGap);
-
-            foreach (var enemy in enemies)
-            {
-                enemy.transform.SetParent(transform);
-                enemy.OnEnemyKilled += scoreValue => OnEnemyKilled?.Invoke(scoreValue);
-            }
-
-            currentHorisontalDirection = 1f;
-
-            return enemies;
+            movement = new EnemyGridMovement(transform, changeDirDistance, moveDownOffset, horisontalSpeed);
+            enemyGridGenerator = new EnemyGridGenerator(transform);
         }
 
         private void Update()
         {
-            CheckChangeDirection();
-
-            Vector3 newPos = transform.position;
-            newPos.x += horisontalSpeed * Time.deltaTime * currentHorisontalDirection;
-            transform.position = newPos;
+            movement.FrameMove();
         }
 
-        private void CheckChangeDirection()
+        public void GenerateGrid()
         {
-            if (transform.localPosition.x * currentHorisontalDirection < changeDirDistance) return;
-
-            currentHorisontalDirection = -currentHorisontalDirection;
-            MoveDown();
-        }
-
-        private void MoveDown()
-        {
-            var newPos = transform.position;
-            newPos.y -= moveDownOffset;
-            transform.position = newPos;
+            CurrentEnemyGrid = enemyGridGenerator.GenerateGrid(enemyPrefabs, size, enemyGap);
         }
     }
 }
