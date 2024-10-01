@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,8 @@ namespace SpaceInvadersTask.GameAssembly
         private Vector2 direction;
 
         private SpriteRenderer spriteRenderer;
+
+        public event Action OnDestroyed;
 
         private void Awake()
         {
@@ -32,6 +35,11 @@ namespace SpaceInvadersTask.GameAssembly
             {
                 Destroy(gameObject);
             }
+        }
+
+        private void OnDestroy()
+        {
+            OnDestroyed?.Invoke();
         }
 
         private void CheckForOutOfBounds()
