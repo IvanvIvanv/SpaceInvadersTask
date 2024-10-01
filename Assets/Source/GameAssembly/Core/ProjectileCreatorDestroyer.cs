@@ -6,10 +6,12 @@ namespace SpaceInvadersTask.GameAssembly
 {
     public class ProjectileCreatorDestroyer : MonoBehaviour
     {
-        public void CreateProjectile(GameObject projectilePrefab, Transform source)
+        public GameObject CreateProjectile(GameObject projectilePrefab, Transform source)
         {
             GameObject projectile = Instantiate(projectilePrefab, transform);
             projectile.transform.position = source.position;
+
+            return projectile;
         }
 
         public void DestroyAllProjectiles()

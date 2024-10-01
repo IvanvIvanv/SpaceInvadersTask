@@ -24,6 +24,7 @@ namespace SpaceInvadersTask.GameAssembly
 
         private PlayerBounds playerBounds;
         private EnemyGrid enemyGrid;
+        private Stars stars;
 
         //Misc
         private ResultsGuiDisplayer resultsGuiDisplayer;
@@ -55,6 +56,8 @@ namespace SpaceInvadersTask.GameAssembly
             NewGame();
             CameraFitter.FitCamera();
             playerBounds.SetBounds(player.GetComponent<Renderer>());
+            stars.FitInBounds();
+
             playerBounds.OnEnemyEnterBounds += OnEnemyEnterBoundsHandler;
             enemyGrid.OnEnemyKilled += OnEnemyKilledHandler;
         }
@@ -76,13 +79,18 @@ namespace SpaceInvadersTask.GameAssembly
 
         private void OnEnemyKilledHandler(int scoreValue)
         {
-            score += scoreValue;
-            scoreDisplay.text = score.ToString();
+            SetScore(score + scoreValue);
         }
 
         public void OnReset()
         {
             NewGame();
+        }
+
+        private void SetScore(int newScore)
+        {
+            score = newScore;
+            scoreDisplay.text = score.ToString();
         }
 
         private void NewGame()
@@ -93,7 +101,7 @@ namespace SpaceInvadersTask.GameAssembly
             enemyGrid.GenerateGrid();
             player.Setup();
             ProjectileCreatorDestroyer.DestroyAllProjectiles();
-            score = 0;
+            SetScore(0);
         }
 
         private void GetMonoReferences()
@@ -102,6 +110,8 @@ namespace SpaceInvadersTask.GameAssembly
             CameraFitter = FindObjectOfType<ChildCameraFitter>();
             playerBounds = FindObjectOfType<PlayerBounds>();
             enemyGrid = FindObjectOfType<EnemyGrid>();
+            stars = FindObjectOfType<Stars>();
+
             player = FindObjectOfType<Player>();
             playerInput = player.GetComponent<PlayerInput>();
         }
