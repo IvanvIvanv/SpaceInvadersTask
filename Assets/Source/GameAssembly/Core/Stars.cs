@@ -17,10 +17,19 @@ namespace SpaceInvadersTask.GameAssembly
 
         public void FitInBounds()
         {
+            Vector2 viewportCenter = Camera.main.ViewportToWorldPoint(Vector2.one / 2f);
+            Vector2 viewportTopRight = Camera.main.ViewportToWorldPoint(Vector2.one);
+
+            Bounds viewportBounds = new(viewportCenter, viewportTopRight - viewportCenter);
+
             var shape = particles.shape;
-            shape.radius = (
-                Camera.main.ViewportToWorldPoint(Vector2.one) -
-                Camera.main.ViewportToWorldPoint(Vector2.zero)).x / 2f;
+            shape.radius = viewportBounds.extents.x * 2f;
+
+            var main = particles.main;
+            main.startLifetime = viewportBounds.extents.y * 4f / main.startSpeed.constant;
+
+            particles.Simulate(main.startLifetime.constant);
+            particles.Play();
         }
     }
 }
