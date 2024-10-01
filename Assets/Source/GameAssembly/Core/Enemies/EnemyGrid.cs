@@ -19,7 +19,7 @@ namespace SpaceInvadersTask.GameAssembly
 
         [Header("GridMovement")]
         [SerializeField]
-        private float moveDownDistance = 3f;
+        private float changeDirDistance = 3f;
 
         [SerializeField]
         private float moveDownOffset = 10f;
@@ -27,7 +27,7 @@ namespace SpaceInvadersTask.GameAssembly
         [SerializeField]
         private float horisontalSpeed = 10f;
 
-        private bool moveRightFlag;
+        private float currentHorisontalDirection = 1f;
 
         public void GenerateGrid()
         {
@@ -46,15 +46,19 @@ namespace SpaceInvadersTask.GameAssembly
 
         private void Update()
         {
-            if (Mathf.Abs(transform.localPosition.x) >= moveDownDistance)
-            {
-                moveRightFlag = !moveRightFlag;
-                MoveDown();
-            }
+            CheckChangeDirection();
 
             Vector3 newPos = transform.position;
-            newPos.x += horisontalSpeed * Time.deltaTime * (moveRightFlag ? 1f : -1f);
+            newPos.x += horisontalSpeed * Time.deltaTime * currentHorisontalDirection;
             transform.position = newPos;
+        }
+
+        private void CheckChangeDirection()
+        {
+            if (transform.localPosition.x * currentHorisontalDirection < changeDirDistance) return;
+
+            currentHorisontalDirection = -currentHorisontalDirection;
+            MoveDown();
         }
 
         private void MoveDown()

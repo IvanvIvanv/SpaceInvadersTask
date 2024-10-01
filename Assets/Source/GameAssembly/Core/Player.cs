@@ -19,8 +19,6 @@ namespace SpaceInvadersTask.GameAssembly
 
         private float moveDir;
 
-        public event Action OnResetted;
-
         private void Update()
         {
             Vector3 newPos = transform.position;
@@ -40,13 +38,9 @@ namespace SpaceInvadersTask.GameAssembly
 
         public void OnShoot()
         {
-            GameObject projectile = Instantiate(projectilePrefab);
-            projectile.transform.position = transform.position;
-        }
-
-        public void OnReset()
-        {
-            OnResetted?.Invoke();
+            GameState.Instance.ProjectileCreatorDestroyer.CreateProjectile(
+                projectilePrefab,
+                transform);
         }
 
         public void Setup()

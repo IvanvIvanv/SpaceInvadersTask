@@ -171,7 +171,7 @@ public partial class @PlayerInputAsset: IInputActionCollection2, IDisposable
             ]
         },
         {
-            ""name"": ""Gui"",
+            ""name"": ""Reset"",
             ""id"": ""c85486f1-144e-4146-bc03-095d424ba7b3"",
             ""actions"": [
                 {
@@ -205,9 +205,9 @@ public partial class @PlayerInputAsset: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
-        // Gui
-        m_Gui = asset.FindActionMap("Gui", throwIfNotFound: true);
-        m_Gui_Reset = m_Gui.FindAction("Reset", throwIfNotFound: true);
+        // Reset
+        m_Reset = asset.FindActionMap("Reset", throwIfNotFound: true);
+        m_Reset_Reset = m_Reset.FindAction("Reset", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -320,57 +320,57 @@ public partial class @PlayerInputAsset: IInputActionCollection2, IDisposable
     }
     public PlayerActions @Player => new PlayerActions(this);
 
-    // Gui
-    private readonly InputActionMap m_Gui;
-    private List<IGuiActions> m_GuiActionsCallbackInterfaces = new List<IGuiActions>();
-    private readonly InputAction m_Gui_Reset;
-    public struct GuiActions
+    // Reset
+    private readonly InputActionMap m_Reset;
+    private List<IResetActions> m_ResetActionsCallbackInterfaces = new List<IResetActions>();
+    private readonly InputAction m_Reset_Reset;
+    public struct ResetActions
     {
         private @PlayerInputAsset m_Wrapper;
-        public GuiActions(@PlayerInputAsset wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Reset => m_Wrapper.m_Gui_Reset;
-        public InputActionMap Get() { return m_Wrapper.m_Gui; }
+        public ResetActions(@PlayerInputAsset wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Reset => m_Wrapper.m_Reset_Reset;
+        public InputActionMap Get() { return m_Wrapper.m_Reset; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(GuiActions set) { return set.Get(); }
-        public void AddCallbacks(IGuiActions instance)
+        public static implicit operator InputActionMap(ResetActions set) { return set.Get(); }
+        public void AddCallbacks(IResetActions instance)
         {
-            if (instance == null || m_Wrapper.m_GuiActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_GuiActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_ResetActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ResetActionsCallbackInterfaces.Add(instance);
             @Reset.started += instance.OnReset;
             @Reset.performed += instance.OnReset;
             @Reset.canceled += instance.OnReset;
         }
 
-        private void UnregisterCallbacks(IGuiActions instance)
+        private void UnregisterCallbacks(IResetActions instance)
         {
             @Reset.started -= instance.OnReset;
             @Reset.performed -= instance.OnReset;
             @Reset.canceled -= instance.OnReset;
         }
 
-        public void RemoveCallbacks(IGuiActions instance)
+        public void RemoveCallbacks(IResetActions instance)
         {
-            if (m_Wrapper.m_GuiActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_ResetActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IGuiActions instance)
+        public void SetCallbacks(IResetActions instance)
         {
-            foreach (var item in m_Wrapper.m_GuiActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_ResetActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_GuiActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_ResetActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public GuiActions @Gui => new GuiActions(this);
+    public ResetActions @Reset => new ResetActions(this);
     public interface IPlayerActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
     }
-    public interface IGuiActions
+    public interface IResetActions
     {
         void OnReset(InputAction.CallbackContext context);
     }

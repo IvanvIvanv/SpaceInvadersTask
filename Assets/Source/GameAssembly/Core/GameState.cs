@@ -15,15 +15,21 @@ namespace SpaceInvadersTask.GameAssembly
         [SerializeField]
         private GameObject resultsGui; 
 
+        //Component references
         private Player player;
         private PlayerInput playerInput;
 
         private ChildCameraFitter cameraFitter;
         private PlayerBounds playerBounds;
         private EnemyGrid enemyGrid;
-        private TextMeshProUGUI resultsText;
 
+        //Misc
+        private ResultsGuiDisplayer resultsGuiDisplayer;
+
+        //Player values
         private int score;
+
+        public ProjectileCreatorDestroyer ProjectileCreatorDestroyer { get; private set; }
 
         private void Awake()
         {
@@ -36,21 +42,13 @@ namespace SpaceInvadersTask.GameAssembly
                 Instance = this;
             }
 
-            enemyGrid = FindObjectOfType<EnemyGrid>();
-            cameraFitter = FindObjectOfType<ChildCameraFitter>();
-            playerBounds = FindObjectOfType<PlayerBounds>();
-
-            player = FindObjectOfType<Player>();
-            playerInput = player.GetComponent<PlayerInput>();
-
-            resultsText = resultsGui.GetComponentInChildren<TextMeshProUGUI>();
-
-            player.OnResetted += OnResettedHandler;
+            resultsGuiDisplayer = new(resultsGui);
+            GetMonoReferences();
         }
 
         private void Start()
         {
-            SetupGame();
+            NewGame();
             cameraFitter.FitCamera();
             playerBounds.SetBounds(player.GetComponent<Renderer>());
             playerBounds.OnEnemyEnterBounds += OnEnemyEnterBoundsHandler;
@@ -66,45 +64,34 @@ namespace SpaceInvadersTask.GameAssembly
 
         private void OnEnemyEnterBoundsHandler()
         {
-            ShowResultsScreen();
+            GamePauser.SetPause(true);
+            resultsGuiDisplayer.ShowResultsScreen();
+            playerInput.enabled = false;
         }
 
-        private void OnResettedHandler()
+        public void OnReset()
         {
-            SetupGame();
+            NewGame();
         }
 
-        private void SetupGame()
+        private void NewGame()
         {
-            SetPaused(false);
-            playerInput.SwitchCurrentActionMap("Player");
-
+            GamePauser.SetPause(false);
+            resultsGuiDisplayer.HideResultsScreen();
+            playerInput.enabled = true;
             enemyGrid.GenerateGrid();
-
-            resultsGui.SetActive(false);
-
             player.Setup();
+            ProjectileCreatorDestroyer.DestroyAllProjectiles();
         }
 
-        private void ShowResultsScreen(bool win = false)
+        private void GetMonoReferences()
         {
-            StringBuilder resultsBuilder = new();
-            resultsBuilder.AppendLine(win ? "You won" : "You lost");
-            resultsBuilder.AppendLine("Press R to restart");
-
-            resultsBuilder.Append("Score: ");
-            resultsBuilder.AppendLine(score.ToString());
-
-            resultsText.text = resultsBuilder.ToString();
-            resultsGui.SetActive(true);
-
-            SetPaused(true);
-            playerInput.SwitchCurrentActionMap("Gui");
-        }
-
-        private void SetPaused(bool paused)
-        {
-            Time.timeScale = paused ? 0f : 1f;
+            ProjectileCreatorDestroyer = FindObjectOfType<ProjectileCreatorDestroyer>();
+            cameraFitter = FindObjectOfType<ChildCameraFitter>();
+            playerBounds = FindObjectOfType<PlayerBounds>();
+            enemyGrid = FindObjectOfType<EnemyGrid>();
+            player = FindObjectOfType<Player>();
+            playerInput = player.GetComponent<PlayerInput>();
         }
     }
 }
