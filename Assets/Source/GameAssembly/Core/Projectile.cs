@@ -16,6 +16,8 @@ namespace SpaceInvadersTask.GameAssembly
 
         private SpriteRenderer spriteRenderer;
 
+        private bool hitFlag;
+
         public event Action OnDestroyed;
 
         private void Awake()
@@ -31,10 +33,12 @@ namespace SpaceInvadersTask.GameAssembly
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (targets == (targets | (1 << other.gameObject.layer)))
-            {
-                Destroy(gameObject);
-            }
+            if (hitFlag) return;
+            if (targets != (targets | (1 << other.gameObject.layer))) return;
+            if (!other.gameObject.TryGetComponent<IHittable>(out var hittable)) return;
+            hittable.Hit();
+            Destroy(gameObject);
+            hitFlag = true;
         }
 
         private void OnDestroy()
@@ -44,7 +48,10 @@ namespace SpaceInvadersTask.GameAssembly
 
         private void CheckForOutOfBounds()
         {
-            if (spriteRenderer.bounds.Intersects(GameState.Instance.CameraFitter.CurrentBounds)) return;
+            Vector2 viewportCenter = Camera.main.ViewportToWorldPoint(new(0.5f, 0.5f));
+            Vector2 viewportTopRight = Camera.main.ViewportToWorldPoint(Vector2.one);
+
+            if (spriteRenderer.bounds.Intersects(new(viewportCenter, (viewportTopRight - viewportCenter) * 2f))) return;
 
             Destroy(gameObject);
         }

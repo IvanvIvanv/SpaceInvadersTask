@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 using System.Linq;
+using log4net.Core;
 
 namespace SpaceInvadersTask.GameAssembly
 {
@@ -31,9 +32,11 @@ namespace SpaceInvadersTask.GameAssembly
         private PlayerBounds playerBounds;
         private EnemyGrid enemyGrid;
         private Stars stars;
+        private LivesIcons livesIcons;
 
         //Misc
         private ResultsGuiDisplayer resultsGuiDisplayer;
+        private int remainingEnemies;
 
         //Player values
         private int score;
@@ -65,6 +68,7 @@ namespace SpaceInvadersTask.GameAssembly
             stars.FitInBounds();
 
             playerBounds.OnEnemyEnterBounds += OnEnemyEnterBoundsHandler;
+            player.OnHit += OnPlayerHitHandler;
         }
 
         private void OnDestroy()
@@ -77,14 +81,20 @@ namespace SpaceInvadersTask.GameAssembly
 
         private void OnEnemyEnterBoundsHandler()
         {
-            GamePauser.SetPause(true);
-            resultsGuiDisplayer.ShowResultsScreen();
-            playerInput.enabled = false;
+            Lose();
         }
 
         private void OnEnemyKilledHandler(int scoreValue)
         {
             SetScore(score + scoreValue);
+            remainingEnemies--;
+            if (remainingEnemies == 0) Win();
+        }
+
+        private void OnPlayerHitHandler(int newLives)
+        {
+            if (newLives == 0) Lose();
+            livesIcons.SubtractLife();
         }
 
         public void OnReset()
@@ -102,6 +112,7 @@ namespace SpaceInvadersTask.GameAssembly
         {
             GamePauser.SetPause(false);
             SetScore(0);
+            livesIcons.SetLives(player.MaxLives);
             resultsGuiDisplayer.HideResultsScreen();
 
             player.Setup();
@@ -110,6 +121,7 @@ namespace SpaceInvadersTask.GameAssembly
             ProjectileCreatorDestroyer.DestroyAllProjectiles();
 
             enemyGrid.GenerateGrid();
+            remainingEnemies = enemyGrid.InitialEnemyCount;
             enemyGrid.CurrentEnemyGrid.OfType<Enemy>().ToList().ForEach(enemy => enemy.OnEnemyKilled += OnEnemyKilledHandler);
         }
 
@@ -120,9 +132,24 @@ namespace SpaceInvadersTask.GameAssembly
             playerBounds = FindObjectOfType<PlayerBounds>();
             enemyGrid = FindObjectOfType<EnemyGrid>();
             stars = FindObjectOfType<Stars>();
+            livesIcons = FindObjectOfType<LivesIcons>();
 
             player = FindObjectOfType<Player>();
             playerInput = player.GetComponent<PlayerInput>();
+        }
+
+        private void Lose()
+        {
+            GamePauser.SetPause(true);
+            resultsGuiDisplayer.ShowResultsScreen();
+            playerInput.enabled = false;
+        }
+
+        private void Win()
+        {
+            GamePauser.SetPause(true);
+            resultsGuiDisplayer.ShowResultsScreen(true);
+            playerInput.enabled = false;
         }
     }
 }

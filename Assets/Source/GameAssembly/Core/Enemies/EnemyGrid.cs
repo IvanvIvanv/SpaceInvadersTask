@@ -45,6 +45,7 @@ namespace SpaceInvadersTask.GameAssembly
 
         //Properties
         public Enemy[,] CurrentEnemyGrid { get; private set; }
+        public int InitialEnemyCount => size.x * size.y;
 
         private void Awake()
         {

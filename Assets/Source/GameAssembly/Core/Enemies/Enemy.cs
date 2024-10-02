@@ -7,7 +7,7 @@ using UnityEngine;
 namespace SpaceInvadersTask.GameAssembly
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class Enemy : MonoBehaviour
+    public class Enemy : MonoBehaviour, IHittable
     {
         [SerializeField]
         private GameObject projectilePrefab;
@@ -31,12 +31,6 @@ namespace SpaceInvadersTask.GameAssembly
             remainingHealth = maxHealth;
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (other.gameObject.layer != LayerMask.NameToLayer("PlayerProjectile")) return;
-            ReceiveDamage();
-        }
-
         public void Shoot()
         {
             GameState.Instance.ProjectileCreatorDestroyer.CreateProjectile(
@@ -51,6 +45,11 @@ namespace SpaceInvadersTask.GameAssembly
             if (remainingHealth > 0) return;
             Destroy(gameObject);
             OnEnemyKilled?.Invoke(scoreValue);
-        } 
+        }
+
+        public void Hit()
+        {
+            ReceiveDamage();
+        }
     }
 }

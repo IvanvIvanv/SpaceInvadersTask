@@ -31,6 +31,7 @@ namespace SpaceInvadersTask.GameAssembly
         private void ShootRandom()
         {
             List<Enemy[]> ableToShootColumns = GetAbleToShootColumns();
+            if (ableToShootColumns.Count == 0) return;
             Enemy[] selectedColumnToShoot = ableToShootColumns[Random.Range(0, ableToShootColumns.Count)];
             selectedColumnToShoot.Last(enemy => enemy != null).Shoot();
         }

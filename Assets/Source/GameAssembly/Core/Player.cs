@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 namespace SpaceInvadersTask.GameAssembly
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class Player : MonoBehaviour
+    public class Player : MonoBehaviour, IHittable
     {
         [Header("Movement")]
         [SerializeField]
@@ -17,9 +17,19 @@ namespace SpaceInvadersTask.GameAssembly
         [SerializeField]
         private GameObject projectilePrefab;
 
+        [Header("Lives")]
+        [SerializeField]
+        private int maxLives = 3;
+
         private float moveDir;
 
         private GameObject createdProjectile;
+
+        private int remainingLives;
+
+        public event Action<int> OnHit;
+
+        public int MaxLives => maxLives;
 
         private void Update()
         {
@@ -52,6 +62,13 @@ namespace SpaceInvadersTask.GameAssembly
             Vector3 newPos = transform.position;
             newPos.x = 0;
             transform.position = newPos;
+            remainingLives = maxLives;
+        }
+
+        public void Hit()
+        {
+            remainingLives -= 1;
+            OnHit?.Invoke(remainingLives);
         }
     }
 }
