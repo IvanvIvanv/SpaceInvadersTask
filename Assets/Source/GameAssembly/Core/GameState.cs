@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 using System.Linq;
-using log4net.Core;
 
 namespace SpaceInvadersTask.GameAssembly
 {
