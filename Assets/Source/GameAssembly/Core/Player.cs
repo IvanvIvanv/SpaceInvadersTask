@@ -21,6 +21,8 @@ namespace SpaceInvadersTask.GameAssembly
         [SerializeField]
         private int maxLives = 3;
 
+        private SpriteRenderer spriteRenderer;
+
         private float moveDir;
 
         private GameObject createdProjectile;
@@ -30,6 +32,11 @@ namespace SpaceInvadersTask.GameAssembly
         public event Action<int> OnHit;
 
         public int MaxLives => maxLives;
+
+        private void Awake()
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
 
         private void Update()
         {
@@ -63,11 +70,13 @@ namespace SpaceInvadersTask.GameAssembly
             newPos.x = 0;
             transform.position = newPos;
             remainingLives = maxLives;
+            spriteRenderer.color = Color.white;
         }
 
         public void Hit()
         {
             remainingLives -= 1;
+            spriteRenderer.color = Color.Lerp(Color.red, Color.white, (float)remainingLives / maxLives);
             OnHit?.Invoke(remainingLives);
         }
     }
