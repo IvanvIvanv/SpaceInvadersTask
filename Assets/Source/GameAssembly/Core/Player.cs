@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GameAnalyticsSDK;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -48,6 +49,7 @@ namespace SpaceInvadersTask.GameAssembly
 
             newPos.x = Mathf.Clamp(newPos.x, leftEdge.x, rightEdge.x);
             transform.position = newPos;
+            if (Input.GetKeyDown(KeyCode.Escape)) GameAnalytics.NewErrorEvent(GAErrorSeverity.Warning, "Can't quit application in WebGL");
         }
 
         public void OnMove(InputValue value)

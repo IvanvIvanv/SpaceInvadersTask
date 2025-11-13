@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GameAnalyticsSDK;
 using UnityEngine;
 
 namespace SpaceInvadersTask.GameAssembly
@@ -17,11 +18,14 @@ namespace SpaceInvadersTask.GameAssembly
         [SerializeField]
         private int maxHealth = 3;
 
+        [SerializeField]
+        private string enemyID;
+
         private SpriteRenderer spriteRenderer;
 
         private int remainingHealth;
 
-        public event Action<int> OnEnemyKilled;
+        public event Action<string, int> OnEnemyKilled;
 
         private void Awake()
         {
@@ -40,10 +44,11 @@ namespace SpaceInvadersTask.GameAssembly
         {
             remainingHealth -= 1;
             spriteRenderer.color = Color.Lerp(Color.red, Color.white, (float)remainingHealth / maxHealth);
+            GameAnalytics.NewDesignEvent("EnemyDamaged");
 
             if (remainingHealth > 0) return;
             Destroy(gameObject);
-            OnEnemyKilled?.Invoke(scoreValue);
+            OnEnemyKilled?.Invoke(enemyID, scoreValue);
         }
 
         public void Hit()

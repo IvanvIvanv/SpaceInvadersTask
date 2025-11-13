@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 using System.Linq;
+using GameAnalyticsSDK;
 
 namespace SpaceInvadersTask.GameAssembly
 {
@@ -46,6 +47,8 @@ namespace SpaceInvadersTask.GameAssembly
 
         private void Awake()
         {
+            GameAnalytics.Initialize();
+
             if (Instance != null)
             {
                 Destroy(gameObject);
@@ -83,8 +86,9 @@ namespace SpaceInvadersTask.GameAssembly
             Lose();
         }
 
-        private void OnEnemyKilledHandler(int scoreValue)
+        private void OnEnemyKilledHandler(string enemyID, int scoreValue)
         {
+            GameAnalytics.NewResourceEvent(GAResourceFlowType.Source, nameof(score), scoreValue, "Enemy", enemyID);
             SetScore(score + scoreValue);
             remainingEnemies--;
             if (remainingEnemies == 0) Win();
@@ -122,6 +126,8 @@ namespace SpaceInvadersTask.GameAssembly
             enemyGrid.GenerateGrid();
             remainingEnemies = enemyGrid.InitialEnemyCount;
             enemyGrid.CurrentEnemyGrid.OfType<Enemy>().ToList().ForEach(enemy => enemy.OnEnemyKilled += OnEnemyKilledHandler);
+            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start, "Level1");
+            GameAnalytics.StartTimer("Survival");
         }
 
         private void GetMonoReferences()
@@ -142,6 +148,8 @@ namespace SpaceInvadersTask.GameAssembly
             GamePauser.SetPause(true);
             resultsGuiDisplayer.ShowResultsScreen();
             playerInput.enabled = false;
+            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Level1");
+            GameAnalytics.StopTimer("Survival");
         }
 
         private void Win()
@@ -149,6 +157,8 @@ namespace SpaceInvadersTask.GameAssembly
             GamePauser.SetPause(true);
             resultsGuiDisplayer.ShowResultsScreen(true);
             playerInput.enabled = false;
+            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level1");
+            GameAnalytics.StopTimer("Survival");
         }
     }
 }

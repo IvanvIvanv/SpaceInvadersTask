@@ -102,6 +102,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 5822337565218554600, guid: 045af199655387249b54791513667c1a, type: 3}
   scoreValue: 2
   maxHealth: 3
+  enemyID: StrongEnemy
 --- !u!50 &-3329730967898275249
 Rigidbody2D:
   serializedVersion: 4

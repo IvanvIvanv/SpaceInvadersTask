@@ -102,6 +102,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 5822337565218554600, guid: 045af199655387249b54791513667c1a, type: 3}
   scoreValue: 1
   maxHealth: 2
+  enemyID: WeakEnemy
 --- !u!61 &2346009504549409093
 BoxCollider2D:
   m_ObjectHideFlags: 0
