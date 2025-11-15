@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using TMPro;
 using System.Linq;
 using GameAnalyticsSDK;
+using GamePush;
 
 namespace SpaceInvadersTask.GameAssembly
 {
@@ -40,6 +41,7 @@ namespace SpaceInvadersTask.GameAssembly
 
         //Player values
         private int score;
+        private int bestScore = 0;
 
         //Public component references
         public ProjectileCreatorDestroyer ProjectileCreatorDestroyer { get; private set; }
@@ -64,7 +66,6 @@ namespace SpaceInvadersTask.GameAssembly
 
         private void Start()
         {
-            NewGame();
             CameraFitter.FitCamera(cameraMargin);
             playerBounds.SetBounds(player.GetComponent<Renderer>());
             stars.FitInBounds();
@@ -111,7 +112,29 @@ namespace SpaceInvadersTask.GameAssembly
             scoreDisplay.text = score.ToString();
         }
 
-        private void NewGame()
+        public void NewGame()
+        {
+            try
+            {
+                GP_Storage.Get(nameof(bestScore), obj =>
+                {
+                    bestScore = (int)obj;
+                    Debug.Log($"BestScore: {bestScore}");
+                    RunGame();
+                });
+            }
+            catch (PlayerPrefsException)
+            {
+                GP_Storage.Set(nameof(bestScore), 0, storage =>
+                {
+                    bestScore = 0;
+                    Debug.Log($"BestScore: {bestScore}");
+                    RunGame();
+                });
+            }
+        }
+
+        private void RunGame()
         {
             GamePauser.SetPause(false);
             SetScore(0);
@@ -150,6 +173,7 @@ namespace SpaceInvadersTask.GameAssembly
             playerInput.enabled = false;
             GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Level1");
             GameAnalytics.StopTimer("Survival");
+            UpdateBestScore();
         }
 
         private void Win()
@@ -159,6 +183,13 @@ namespace SpaceInvadersTask.GameAssembly
             playerInput.enabled = false;
             GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level1");
             GameAnalytics.StopTimer("Survival");
+            UpdateBestScore();
+        }
+
+        private void UpdateBestScore()
+        {
+            if (score > bestScore) bestScore = score;
+            GP_Storage.Set(nameof(bestScore), bestScore);
         }
     }
 }
